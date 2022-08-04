@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "GitHubMonitor": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7243",
+      "launchBrowser": false
+    }
+  }
+}
