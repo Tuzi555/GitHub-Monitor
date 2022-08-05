@@ -6,27 +6,25 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace GitHubMonitor
 {
     public static class StoreData
     {
         [FunctionName("StoreData")]
-        public static async Task<IActionResult> Run(
+
+        public static IActionResult Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            [CosmosDB(databaseName: "GeneralDB", collectionName: "GitHubMonitor", ConnectionStringSetting = "CosmosDbConnection")] out string docs,
             ILogger log)
         {
             log.LogInformation("GitHub monitor processed an action");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
+            string requestBody = new StreamReader(req.Body).ReadToEnd();
+            docs = requestBody;
+            log.LogInformation("Successfully posted to Cosmos DB.");
 
-
-            //TODO - implement insert to database
-            log.LogInformation(requestBody);
-
-            return new OkResult();
+            return new OkObjectResult("Successfully posted to Cosmos DB.");
         }
     }
 }
